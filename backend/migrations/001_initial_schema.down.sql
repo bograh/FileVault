@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS daily_stats;
+DROP TABLE IF EXISTS subscriptions;
+DROP TABLE IF EXISTS webhook_deliveries;
+DROP TABLE IF EXISTS webhook_endpoints;
+DROP TABLE IF EXISTS usage_records;
+DROP TABLE IF EXISTS api_keys;
+DROP TABLE IF EXISTS uploads;
+DROP TABLE IF EXISTS projects;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS users;
