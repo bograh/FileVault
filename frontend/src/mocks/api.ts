@@ -101,7 +101,7 @@ function paginate<T>(
   };
 }
 
-// ==================== Auth ====================
+
 
 export const authApi = {
   async login(params: {
@@ -153,7 +153,7 @@ export const authApi = {
   },
 };
 
-// ==================== Projects ====================
+
 
 export const projectsApi = {
   async list(): Promise<Project[]> {
@@ -270,7 +270,7 @@ export const projectsApi = {
   },
 };
 
-// ==================== Uploads ====================
+
 
 export const uploadsApi = {
   async list(params: UploadListParams): Promise<Page<Upload>> {
@@ -373,7 +373,7 @@ export const uploadsApi = {
   },
 };
 
-// ==================== API Keys ====================
+
 
 export const apiKeysApi = {
   async list(projectId: string): Promise<ApiKey[]> {
@@ -424,7 +424,7 @@ export const apiKeysApi = {
   },
 };
 
-// ==================== Webhooks ====================
+
 
 export const webhooksApi = {
   async list(projectId: string): Promise<WebhookEndpoint[]> {
@@ -509,7 +509,7 @@ export const webhooksApi = {
   },
 };
 
-// ==================== Billing ====================
+
 
 export const billingApi = {
   async plans(): Promise<Plan[]> {
@@ -536,7 +536,7 @@ export const billingApi = {
   },
 };
 
-// ==================== Aggregated Dashboard ====================
+
 
 export interface DashboardOverview {
   totals: {
