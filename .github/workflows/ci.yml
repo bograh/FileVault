@@ -1,0 +1,166 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GO_VERSION: "1.22"
+  NODE_VERSION: "20"
+
+jobs:
+  # ==================== Backend ====================
+  backend-lint:
+    name: Backend Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: latest
+          working-directory: backend
+
+  backend-test:
+    name: Backend Test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: filevault
+          POSTGRES_PASSWORD: filevault
+          POSTGRES_DB: filevault_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Download dependencies
+        working-directory: backend
+        run: go mod download
+
+      - name: Run migrations
+        working-directory: backend
+        env:
+          DATABASE_URL: postgres://filevault:filevault@localhost:5432/filevault_test?sslmode=disable
+        run: go run ./cmd/migrate up
+
+      - name: Run tests
+        working-directory: backend
+        env:
+          DATABASE_URL: postgres://filevault:filevault@localhost:5432/filevault_test?sslmode=disable
+          REDIS_URL: redis://localhost:6379/1
+          AUTH_HMAC_SECRET: ci-test-secret-32-bytes-minimum!!
+          AUTH_SESSION_SECRET: ci-test-session-secret
+        run: go test ./... -v -race -count=1 -coverprofile=coverage.out
+
+      - name: Upload coverage
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/coverage.out
+
+  backend-build:
+    name: Backend Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Build binaries
+        working-directory: backend
+        run: |
+          CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/api ./cmd/api
+          CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/worker ./cmd/worker
+          CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/migrate ./cmd/migrate
+
+  # ==================== Frontend ====================
+  frontend-lint:
+    name: Frontend Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        working-directory: frontend
+        run: pnpm typecheck
+
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: frontend
+        run: pnpm build
+
+  # ==================== Docker ====================
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: [backend-build, frontend-build]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t filevault-backend:ci ./backend
+
+      - name: Build frontend image
+        run: docker build -t filevault-frontend:ci ./frontend

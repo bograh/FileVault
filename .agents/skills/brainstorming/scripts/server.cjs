@@ -3,7 +3,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-// ========== WebSocket Protocol (RFC 6455) ==========
+
 
 const OPCODES = { TEXT: 0x01, CLOSE: 0x08, PING: 0x09, PONG: 0x0A };
 const WS_MAGIC = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
@@ -71,7 +71,7 @@ function decodeFrame(buffer) {
   return { opcode, payload: data, bytesConsumed: totalLen };
 }
 
-// ========== Configuration ==========
+
 
 const PORT = process.env.BRAINSTORM_PORT || (49152 + Math.floor(Math.random() * 16383));
 const HOST = process.env.BRAINSTORM_HOST || '127.0.0.1';
@@ -87,7 +87,7 @@ const MIME_TYPES = {
   '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.svg': 'image/svg+xml'
 };
 
-// ========== Templates and Constants ==========
+
 
 const WAITING_PAGE = `<!DOCTYPE html>
 <html>
@@ -102,7 +102,7 @@ const frameTemplate = fs.readFileSync(path.join(__dirname, 'frame-template.html'
 const helperScript = fs.readFileSync(path.join(__dirname, 'helper.js'), 'utf-8');
 const helperInjection = '<script>\n' + helperScript + '\n</script>';
 
-// ========== Helper Functions ==========
+
 
 function isFullDocument(html) {
   const trimmed = html.trimStart().toLowerCase();
@@ -124,7 +124,7 @@ function getNewestScreen() {
   return files.length > 0 ? files[0].path : null;
 }
 
-// ========== HTTP Request Handler ==========
+
 
 function handleRequest(req, res) {
   touchActivity();
@@ -160,7 +160,7 @@ function handleRequest(req, res) {
   }
 }
 
-// ========== WebSocket Connection Handling ==========
+
 
 const clients = new Set();
 
@@ -244,7 +244,7 @@ function broadcast(msg) {
   }
 }
 
-// ========== Activity Tracking ==========
+
 
 const IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
 let lastActivity = Date.now();
@@ -253,11 +253,11 @@ function touchActivity() {
   lastActivity = Date.now();
 }
 
-// ========== File Watching ==========
+
 
 const debounceTimers = new Map();
 
-// ========== Server Startup ==========
+
 
 function startServer() {
   if (!fs.existsSync(CONTENT_DIR)) fs.mkdirSync(CONTENT_DIR, { recursive: true });
