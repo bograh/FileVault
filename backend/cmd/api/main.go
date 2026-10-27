@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/filevault/backend/internal/billing"
 	"github.com/filevault/backend/internal/cache"
@@ -48,8 +49,19 @@ func main() {
 	}
 	defer db.Close()
 
+	// Retry database ping — other containers may still be starting.
+	for attempt := 1; attempt <= 10; attempt++ {
+		if err := db.Ping(context.Background()); err != nil {
+			logger.Warn("waiting for database",
+				slog.Int("attempt", attempt),
+				slog.String("error", err.Error()))
+			time.Sleep(2 * time.Second)
+			continue
+		}
+		break
+	}
 	if err := db.Ping(context.Background()); err != nil {
-		logger.Error("failed to ping database", slog.String("error", err.Error()))
+		logger.Error("failed to ping database after retries", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
 	logger.Info("connected to database")
@@ -89,6 +101,7 @@ func main() {
 	// Services
 	authService := service.NewAuthService(db, cfg.Auth)
 	projectService := service.NewProjectService(db)
+	authService.SetProjectService(projectService)
 	uploadService := service.NewUploadService(db, storageProvider)
 	apikeyService := service.NewAPIKeyService(db, authService)
 	webhookService := service.NewWebhookService(db)

@@ -26,9 +26,10 @@ var (
 )
 
 type AuthService struct {
-	db     *pgxpool.Pool
-	cfg    config.AuthConfig
-	secret []byte
+	db       *pgxpool.Pool
+	cfg      config.AuthConfig
+	secret   []byte
+	projects *ProjectService
 }
 
 func NewAuthService(db *pgxpool.Pool, cfg config.AuthConfig) *AuthService {
@@ -37,6 +38,11 @@ func NewAuthService(db *pgxpool.Pool, cfg config.AuthConfig) *AuthService {
 		cfg:    cfg,
 		secret: []byte(cfg.HMACSecret),
 	}
+}
+
+// SetProjectService sets the project service dependency (avoids circular init).
+func (s *AuthService) SetProjectService(ps *ProjectService) {
+	s.projects = ps
 }
 
 func (s *AuthService) Signup(ctx context.Context, name, email, password, country string) (*domain.Session, error) {
@@ -84,6 +90,21 @@ func (s *AuthService) Signup(ctx context.Context, name, email, password, country
 		subID, userID, now, periodEnd)
 	if err != nil {
 		return nil, fmt.Errorf("creating subscription: %w", err)
+	}
+
+	// Create a default project with hobby-plan quotas
+	if s.projects != nil {
+		_, err = s.projects.Create(ctx, CreateProjectParams{
+			OwnerID:        userID,
+			Name:           "My Project",
+			Slug:           "my-project-" + userID[4:12],
+			Description:    "Default project",
+			StorageRegion:  "us-east-1",
+			StorageBackend: "s3",
+		})
+		if err != nil {
+			return nil, fmt.Errorf("creating default project: %w", err)
+		}
 	}
 
 	// Create session

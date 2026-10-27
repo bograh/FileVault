@@ -5,6 +5,9 @@ import path from "node:path";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    target: "esnext",
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -12,5 +15,11 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    proxy: {
+      "/v1": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+    },
   },
 });

@@ -1,31 +1,131 @@
 import { Link } from "@tanstack/react-router";
 import {
+  Activity,
   ArrowRight,
-  CheckCircle2,
+  Boxes,
+  Check,
+  ChevronRight,
   CloudUpload,
   Code2,
+  DatabaseZap,
+  FileArchive,
+  Fingerprint,
+  GitBranch,
   Globe2,
   KeyRound,
-  Layers,
+  LockKeyhole,
+  Radio,
+  ScanSearch,
+  ServerCog,
   ShieldCheck,
-  Sparkles,
+  Terminal,
+  UploadCloud,
   Webhook,
-  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+
+const NAV_ITEMS = [
+  { label: "Product", href: "#product" },
+  { label: "Security", href: "#security" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "Docs", href: "https://docs.filevault.io" },
+];
+
+const PARTNERS = ["Vercel", "Railway", "Fly.io", "Supabase", "Linear"];
+
+const WORKFLOWS = [
+  {
+    icon: CloudUpload,
+    title: "Direct uploads",
+    body: "Issue short-lived upload URLs and send large files straight to S3, R2, B2, or MinIO without proxying bytes through your app.",
+  },
+  {
+    icon: Webhook,
+    title: "Event delivery",
+    body: "Subscribe to upload.completed, scan.failed, quota.warning, and deletion events with signed retries and searchable delivery logs.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Policy controls",
+    body: "Enforce MIME inspection, project quotas, lifecycle rules, CORS, IP allowlists, and optional malware scanning per environment.",
+  },
+];
+
+const SECURITY = [
+  {
+    icon: Fingerprint,
+    title: "Scoped API keys",
+    body: "Create project tokens with read, write, delete, and admin permissions. Rotate keys without changing bucket credentials.",
+  },
+  {
+    icon: ScanSearch,
+    title: "Content inspection",
+    body: "Validate file signatures before objects become available. Quarantine suspicious uploads and notify your app immediately.",
+  },
+  {
+    icon: LockKeyhole,
+    title: "Tenant isolation",
+    body: "Separate prefixes, quotas, lifecycle policies, CORS rules, and audit trails for every product, team, or customer.",
+  },
+  {
+    icon: Globe2,
+    title: "Region aware",
+    body: "Pin projects to the region and storage provider that matches your latency, residency, and compliance requirements.",
+  },
+];
+
+const SDK_FEATURES = [
+  "Browser and server SDKs",
+  "Multipart and resumable uploads",
+  "Typed errors and retry helpers",
+  "OpenAPI for custom clients",
+  "Webhook signature verification",
+  "BYO bucket configuration",
+  "Usage analytics and quotas",
+  "Audit log export",
+  "Custom domains",
+];
+
+const TIERS = [
+  {
+    name: "Hobby",
+    price: "$0",
+    note: "for side projects",
+    features: ["1 project", "5 GB storage", "10 GB transfer"],
+  },
+  {
+    name: "Launch",
+    price: "$19",
+    note: "per month",
+    features: ["5 projects", "50 GB storage", "Webhooks and scanning"],
+    featured: true,
+  },
+  {
+    name: "Scale",
+    price: "$79",
+    note: "per month",
+    features: ["25 projects", "500 GB storage", "Custom domains"],
+  },
+];
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-hidden bg-[#020303] text-zinc-100">
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.16),transparent_30%),radial-gradient(circle_at_85%_18%,rgba(105,180,160,0.16),transparent_24%),radial-gradient(circle_at_18%_44%,rgba(135,135,135,0.13),transparent_30%)]" />
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.14] [background-image:linear-gradient(to_right,rgba(255,255,255,0.24)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.2)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black_0%,transparent_70%)]" />
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(to_bottom,transparent,rgba(0,0,0,0.7)_60%,#020303)]" />
       <MarketingNav />
-      <Hero />
-      <Logos />
-      <Features />
-      <CodeShowcase />
-      <Pricing />
-      <FAQ />
-      <FooterCta />
+      <main className="relative z-10">
+        <Hero />
+        <PartnerStrip />
+        <LanguageSection />
+        <OpenSourceSection />
+        <ProductSection />
+        <SecuritySection />
+        <SdkSection />
+        <PricingSection />
+        <FooterCta />
+      </main>
       <SiteFooter />
     </div>
   );
@@ -33,48 +133,42 @@ export function LandingPage() {
 
 function MarketingNav() {
   return (
-    <header className="sticky top-0 z-30 border-b border-border/40 bg-background/70 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-white/[0.06] bg-black/30 backdrop-blur-xl">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-cyan-400 text-primary-foreground shadow-md">
-            <Layers className="h-4 w-4" />
+          <span className="flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-white/[0.06] shadow-[0_0_28px_rgba(255,255,255,0.12)]">
+            <FileArchive className="h-4 w-4 text-zinc-100" />
           </span>
-          <span className="text-base font-semibold tracking-tight">
-            FileVault
-          </span>
+          <span className="text-sm font-semibold tracking-tight">FileVault</span>
         </Link>
-        <nav className="hidden items-center gap-7 text-sm md:flex">
-          <a
-            href="#features"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Features
-          </a>
-          <a
-            href="#pricing"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Pricing
-          </a>
-          <a
-            href="https://docs.filevault.io"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Docs
-          </a>
-          <a
-            href="#faq"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            FAQ
-          </a>
+        <nav className="hidden items-center gap-6 text-[13px] md:flex">
+          {NAV_ITEMS.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="text-zinc-500 transition-colors hover:text-zinc-100"
+            >
+              {item.label}
+            </a>
+          ))}
         </nav>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/login" search={{ redirect: undefined }}>Sign in</Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="hidden text-zinc-300 hover:bg-white/10 hover:text-white sm:inline-flex"
+            asChild
+          >
+            <Link to="/login" search={{ redirect: undefined }}>
+              Sign in
+            </Link>
           </Button>
-          <Button size="sm" asChild>
-            <Link to="/signup">Get started</Link>
+          <Button
+            size="sm"
+            className="bg-zinc-100 text-zinc-950 hover:bg-white"
+            asChild
+          >
+            <Link to="/signup">Start</Link>
           </Button>
         </div>
       </div>
@@ -84,179 +178,148 @@ function MarketingNav() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 grid-fade-mask opacity-[0.18]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, var(--color-border) 1px, transparent 1px), linear-gradient(to bottom, var(--color-border) 1px, transparent 1px)",
-          backgroundSize: "44px 44px",
-        }}
-      />
-      <div className="mx-auto max-w-7xl px-6 pb-20 pt-24 text-center md:pt-32">
-        <Badge variant="outline" className="mb-6 inline-flex">
-          <Sparkles className="h-3 w-3" />
-          Now in private beta — invite codes available
-        </Badge>
-        <h1 className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
-          File uploads, the boring{" "}
-          <span className="bg-gradient-to-br from-primary via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
-            parts done right.
-          </span>
+    <section className="relative px-4 pb-24 pt-32 text-center sm:px-6 md:pb-32 md:pt-40">
+      <CircuitDetails />
+      <div className="mx-auto max-w-4xl">
+        <div className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-zinc-400 shadow-[0_0_40px_rgba(255,255,255,0.06)]">
+          <Radio className="h-3.5 w-3.5 text-emerald-300" />
+          Upload infrastructure for production apps
+        </div>
+        <h1 className="mx-auto max-w-3xl text-balance text-5xl font-semibold leading-[0.95] tracking-tight text-white sm:text-6xl md:text-7xl">
+          The file platform for modern APIs
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
-          FileVault is a developer-first, S3-powered upload service. Presigned
-          URLs, resumable transfers, virus scanning, webhooks, and per-tenant
-          quotas — without the boilerplate.
+        <p className="mx-auto mt-6 max-w-2xl text-balance text-sm leading-6 text-zinc-400 sm:text-base">
+          FileVault gives developers secure uploads, signed delivery URLs,
+          scanning, quotas, webhooks, and audit trails without rebuilding the
+          storage pipeline for every product.
         </p>
-        <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <Button size="xl" asChild>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Button
+            size="lg"
+            className="bg-zinc-100 text-zinc-950 hover:bg-white"
+            asChild
+          >
             <Link to="/signup">
-              Start uploading <ArrowRight className="h-4 w-4" />
+              Get started <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
-          <Button size="xl" variant="outline" asChild>
-            <a href="https://docs.filevault.io">View docs</a>
+          <Button
+            size="lg"
+            variant="ghost"
+            className="text-zinc-300 hover:bg-white/10 hover:text-white"
+            asChild
+          >
+            <a href="https://docs.filevault.io">
+              Documentation <ChevronRight className="h-4 w-4" />
+            </a>
           </Button>
         </div>
-        <p className="mt-4 text-xs text-muted-foreground">
-          Free Hobby tier. No credit card required.
-        </p>
-
-        <div className="relative mx-auto mt-16 max-w-5xl">
-          <div className="rounded-2xl border border-border/70 bg-card/40 p-2 shadow-2xl shadow-primary/10 backdrop-blur">
-            <div className="rounded-xl bg-gradient-to-br from-card via-card/80 to-background p-4 ring-1 ring-border/60">
-              <DashboardPreview />
-            </div>
-          </div>
-        </div>
+      </div>
+      <div className="mx-auto mt-16 max-w-5xl">
+        <HeroConsole />
       </div>
     </section>
   );
 }
 
-function DashboardPreview() {
+function CircuitDetails() {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <div className="rounded-lg border border-border/60 bg-card/60 p-4">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground">
-          Storage
+    <>
+      <div className="absolute left-8 top-28 hidden h-24 w-40 border-l border-t border-white/10 md:block" />
+      <div className="absolute right-10 top-36 hidden h-32 w-52 border-r border-t border-emerald-200/10 md:block" />
+      <div className="absolute left-[12%] top-40 hidden h-1.5 w-1.5 rounded-full bg-emerald-300/70 shadow-[0_0_18px_rgba(110,231,183,0.8)] lg:block" />
+      <div className="absolute right-[22%] top-24 hidden h-1.5 w-1.5 rounded-full bg-zinc-200/60 shadow-[0_0_16px_rgba(255,255,255,0.6)] lg:block" />
+    </>
+  );
+}
+
+function HeroConsole() {
+  return (
+    <div className="rounded-lg border border-white/10 bg-black/60 p-1 text-left shadow-[0_0_90px_rgba(255,255,255,0.13)] backdrop-blur">
+      <div className="flex h-9 items-center justify-between border-b border-white/[0.07] px-3">
+        <div className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
+          <span className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
+          <span className="h-2.5 w-2.5 rounded-full bg-emerald-300/70" />
         </div>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-semibold">128.4</span>
-          <span className="text-sm text-muted-foreground">GB / 500 GB</span>
-        </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
-          <div className="h-full w-[26%] rounded-full bg-gradient-to-r from-primary to-cyan-400" />
-        </div>
-      </div>
-      <div className="rounded-lg border border-border/60 bg-card/60 p-4">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground">
-          Bandwidth
-        </div>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-semibold">412.1</span>
-          <span className="text-sm text-muted-foreground">GB this month</span>
-        </div>
-        <div className="mt-3 flex h-12 items-end gap-1.5">
-          {[24, 38, 18, 56, 42, 70, 48, 62, 72, 88, 60, 78].map((h, i) => (
-            <span
-              key={i}
-              className="flex-1 rounded-sm bg-gradient-to-t from-primary/80 to-cyan-300/70"
-              style={{ height: `${h}%` }}
-            />
-          ))}
+        <div className="flex items-center gap-2 text-[11px] text-zinc-500">
+          <Terminal className="h-3.5 w-3.5" />
+          uploads.ts
         </div>
       </div>
-      <div className="rounded-lg border border-border/60 bg-card/60 p-4">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground">
-          API requests
+      <div className="grid min-h-[330px] grid-cols-1 lg:grid-cols-[0.95fr_1.25fr]">
+        <div className="border-b border-white/[0.07] p-4 lg:border-b-0 lg:border-r">
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-xs font-medium text-zinc-300">Pipeline</span>
+            <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-[11px] text-emerald-200">
+              live
+            </span>
+          </div>
+          <div className="space-y-3">
+            {[
+              ["POST", "/v1/uploads", "201", "42 ms"],
+              ["SCAN", "invoice-q4.pdf", "clean", "1.8 s"],
+              ["HOOK", "upload.completed", "200", "74 ms"],
+              ["GET", "/signed-url", "200", "18 ms"],
+            ].map(([method, path, status, time]) => (
+              <div
+                key={`${method}-${path}`}
+                className="grid grid-cols-[48px_1fr_42px_48px] items-center gap-2 rounded-md border border-white/[0.06] bg-white/[0.03] px-3 py-2 font-mono text-[11px]"
+              >
+                <span className="text-zinc-500">{method}</span>
+                <span className="truncate text-zinc-300">{path}</span>
+                <span className="text-emerald-300">{status}</span>
+                <span className="text-right text-zinc-500">{time}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-5 rounded-md border border-white/[0.06] bg-zinc-950/70 p-3">
+            <div className="mb-3 flex items-center justify-between text-[11px] text-zinc-500">
+              <span>Storage used</span>
+              <span>128.4 GB / 500 GB</span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div className="h-full w-[26%] rounded-full bg-emerald-300" />
+            </div>
+          </div>
         </div>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-semibold">624,182</span>
-          <span className="text-sm text-success">+12.3%</span>
-        </div>
-        <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
-          <li className="flex justify-between">
-            <span>POST /uploads</span>
-            <span className="text-foreground">412k</span>
-          </li>
-          <li className="flex justify-between">
-            <span>GET /uploads/:id/url</span>
-            <span className="text-foreground">141k</span>
-          </li>
-          <li className="flex justify-between">
-            <span>DELETE /uploads/:id</span>
-            <span className="text-foreground">71k</span>
-          </li>
-        </ul>
+        <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-6 text-zinc-300 sm:p-6">
+          <code>{`import { FileVault } from "@filevault/sdk";
+
+const vault = new FileVault({
+  apiKey: process.env.FILEVAULT_KEY,
+});
+
+const upload = await vault.uploads.create({
+  project: "prod_media",
+  filename: file.name,
+  contentType: file.type,
+  scan: true,
+});
+
+await upload.put(file);
+
+return vault.urls.sign(upload.id, {
+  expiresIn: "15m",
+});`}</code>
+        </pre>
       </div>
     </div>
   );
 }
 
-const FEATURES = [
-  {
-    icon: CloudUpload,
-    title: "Presigned uploads",
-    body: "Upload directly from the client to S3 — no proxying through your servers. 15-minute URLs with single-use validation.",
-  },
-  {
-    icon: Zap,
-    title: "Resumable & multipart",
-    body: "TUS-compatible resumable uploads for large files. Chunk in parallel and resume from any device on connection drops.",
-  },
-  {
-    icon: Webhook,
-    title: "Real-time webhooks",
-    body: "Subscribe to upload.completed, file.deleted, quota.warning. HMAC-signed payloads with retry + delivery log.",
-  },
-  {
-    icon: KeyRound,
-    title: "Granular API keys",
-    body: "Per-project keys scoped to read / write / delete / admin. Rotate anytime. IP allowlists supported.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Built-in security",
-    body: "MIME magic-byte inspection, optional ClamAV scanning, AES-256 at rest, per-project CORS, rate-limited APIs.",
-  },
-  {
-    icon: Globe2,
-    title: "Multi-region & BYO bucket",
-    body: "us-east-1, eu-west-1, af-south-1, or bring your own R2/B2/MinIO. Custom domain on Pro and above.",
-  },
-];
-
-function Features() {
+function PartnerStrip() {
   return (
-    <section id="features" className="border-t border-border/40 bg-card/20 py-24">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="max-w-2xl">
-          <Badge variant="outline" className="mb-3">
-            Why FileVault
-          </Badge>
-          <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-            The upload pipeline you keep building, finally a product.
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Stop reinventing presigned URLs, MIME validation, retries, and
-            webhook delivery. FileVault handles the unsexy parts so your team
-            can ship.
-          </p>
-        </div>
-
-        <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
+    <section className="px-4 pb-20 sm:px-6">
+      <div className="mx-auto max-w-4xl">
+        <p className="text-center text-xs text-zinc-600">Runs with the stack you already use</p>
+        <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-5">
+          {PARTNERS.map((partner) => (
             <div
-              key={f.title}
-              className="group rounded-xl border border-border/60 bg-card/50 p-6 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card/70"
+              key={partner}
+              className="text-center font-mono text-sm text-zinc-500"
             >
-              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary ring-1 ring-primary/20">
-                <f.icon className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-semibold">{f.title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">{f.body}</p>
+              {partner}
             </div>
           ))}
         </div>
@@ -265,76 +328,47 @@ function Features() {
   );
 }
 
-function CodeShowcase() {
+function LanguageSection() {
   return (
-    <section className="border-t border-border/40 py-24">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 md:grid-cols-2 md:items-center">
-        <div>
-          <Badge variant="outline" className="mb-3">
-            <Code2 className="h-3 w-3" />
-            5-minute integration
-          </Badge>
-          <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-            Type-safe SDKs for the languages you actually use.
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            JavaScript, Go, and Python at launch. Identical primitives across
-            all SDKs. Configurable retry, progress callbacks, and built-in
-            error classes that map to the API error catalog.
-          </p>
-          <ul className="mt-6 space-y-2 text-sm">
-            {[
-              "Direct browser uploads with project tokens",
-              "Streaming uploads for large files",
-              "Automatic retry with exponential backoff",
-              "OpenAPI 3.1 spec for any other language",
-            ].map((p) => (
-              <li key={p} className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
-                <span className="text-muted-foreground">{p}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-8 flex gap-3">
-            <Button asChild>
-              <a href="https://docs.filevault.io">Read the docs</a>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link to="/signup">Get an API key</Link>
-            </Button>
-          </div>
+    <section id="product" className="px-4 py-24 sm:px-6">
+      <SectionHeader
+        eyebrow="Any language, any framework"
+        title="Add secure uploads with one API surface"
+        body="Simple SDKs and REST endpoints cover the lifecycle from request validation to delivery URLs, webhooks, scans, and retention."
+      />
+      <div className="mx-auto mt-12 max-w-5xl rounded-lg border border-white/10 bg-white/[0.025] p-1 shadow-[0_0_80px_rgba(255,255,255,0.08)]">
+        <div className="flex items-center gap-2 border-b border-white/[0.07] px-3 py-2 text-xs text-zinc-500">
+          <Code2 className="h-3.5 w-3.5" />
+          TypeScript
         </div>
-
-        <div className="rounded-xl border border-border/60 bg-card/60 p-1 shadow-2xl shadow-black/30">
-          <div className="flex items-center justify-between border-b border-border/60 px-3 py-2">
-            <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-rose-400/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-amber-300/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-            </div>
-            <span className="font-mono text-[11px] text-muted-foreground">
-              upload.ts
-            </span>
-            <span className="w-12" />
+        <div className="grid grid-cols-1 md:grid-cols-[220px_1fr]">
+          <div className="border-b border-white/[0.07] p-4 md:border-b-0 md:border-r">
+            {["Create upload", "Scan object", "Deliver webhook", "Issue URL"].map(
+              (item, index) => (
+                <div
+                  key={item}
+                  className={`rounded-md px-3 py-2 text-sm ${
+                    index === 0
+                      ? "bg-white/10 text-white"
+                      : "text-zinc-500"
+                  }`}
+                >
+                  {item}
+                </div>
+              ),
+            )}
           </div>
-          <pre className="overflow-x-auto px-4 py-4 font-mono text-[12.5px] leading-relaxed text-foreground/90">
-            <code>{`import { FileVault } from '@filevault/sdk';
+          <pre className="overflow-x-auto p-5 font-mono text-[12px] leading-6 text-zinc-300">
+            <code>{`const upload = await filevault.uploads.prepare({
+  projectId: "prj_9f83",
+  path: "customers/acme/contract.pdf",
+  maxBytes: 50_000_000,
+  allowedTypes: ["application/pdf"],
+});
 
-const fv = new FileVault({ apiKey: process.env.FV_KEY });
+await filevault.webhooks.verify(request);
 
-const upload = await fv
-  .projects('proj_acme_2026')
-  .uploads.create({
-    file,
-    filename: 'report.pdf',
-    onProgress: (pct) => console.log(\`\${pct}%\`),
-  });
-
-const url = await fv
-  .projects('proj_acme_2026')
-  .uploads.getUrl(upload.id, { expiresIn: 3600 });
-
-return Response.redirect(url);`}</code>
+const url = await filevault.files.sign(upload.fileId);`}</code>
           </pre>
         </div>
       </div>
@@ -342,103 +376,54 @@ return Response.redirect(url);`}</code>
   );
 }
 
-const TIERS = [
-  {
-    name: "Hobby",
-    price: "$0",
-    note: "Free forever",
-    features: ["1 project", "5 GB storage", "10 GB bandwidth", "Community support"],
-    cta: "Start free",
-  },
-  {
-    name: "Starter",
-    price: "$19",
-    note: "per month",
-    features: [
-      "5 projects",
-      "50 GB storage",
-      "100 GB bandwidth",
-      "Webhooks + email support",
-    ],
-    cta: "Choose Starter",
-    highlight: true,
-  },
-  {
-    name: "Pro",
-    price: "$79",
-    note: "per month",
-    features: [
-      "25 projects",
-      "500 GB storage",
-      "1 TB bandwidth",
-      "Custom domains + versioning",
-    ],
-    cta: "Choose Pro",
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    note: "Talk to sales",
-    features: ["Unlimited", "SSO + audit logs", "Data residency", "99.99% SLA"],
-    cta: "Contact sales",
-  },
-];
-
-function Pricing() {
+function OpenSourceSection() {
   return (
-    <section id="pricing" className="border-t border-border/40 bg-card/20 py-24">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <Badge variant="outline" className="mb-3">
-            Pricing
-          </Badge>
-          <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-            Predictable, usage-based pricing.
+    <section className="px-4 py-16 sm:px-6">
+      <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+        <div>
+          <h2 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">
+            Open-source core, hosted when you need it
           </h2>
-          <p className="mt-3 text-muted-foreground">
-            Stripe globally, Paystack across Africa. Overages billed
-            transparently — never a surprise invoice.
+          <p className="mt-4 max-w-md text-sm leading-6 text-zinc-500">
+            Keep upload logic inspectable. Run the API beside your app, or use
+            FileVault Cloud when you want managed workers, logs, and billing.
           </p>
+          <Button
+            className="mt-7 bg-zinc-100 text-zinc-950 hover:bg-white"
+            size="sm"
+            asChild
+          >
+            <a href="https://github.com">
+              Star on GitHub <ArrowRight className="h-4 w-4" />
+            </a>
+          </Button>
         </div>
+        <div className="relative min-h-[280px] rounded-lg border border-white/10 bg-white/[0.025] shadow-[0_0_90px_rgba(255,255,255,0.1)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_70%,rgba(255,255,255,0.16),transparent_36%)]" />
+          <div className="absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-3xl border border-white/10 bg-black shadow-[0_0_60px_rgba(255,255,255,0.18)]">
+            <GitBranch className="h-12 w-12 text-zinc-300" />
+          </div>
+          <div className="absolute left-10 top-12 h-px w-28 bg-gradient-to-r from-transparent to-emerald-300/30" />
+          <div className="absolute bottom-14 right-12 h-px w-36 bg-gradient-to-r from-emerald-300/30 to-transparent" />
+        </div>
+      </div>
+    </section>
+  );
+}
 
-        <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {TIERS.map((t) => (
-            <div
-              key={t.name}
-              className={`rounded-xl border p-6 ${
-                t.highlight
-                  ? "border-primary/50 bg-primary/[0.06] shadow-2xl shadow-primary/10"
-                  : "border-border/60 bg-card/60"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-semibold">{t.name}</h3>
-                {t.highlight ? (
-                  <Badge>Most popular</Badge>
-                ) : null}
-              </div>
-              <div className="mt-4 flex items-baseline gap-1.5">
-                <span className="text-3xl font-semibold tracking-tight">
-                  {t.price}
-                </span>
-                <span className="text-sm text-muted-foreground">{t.note}</span>
-              </div>
-              <ul className="mt-5 space-y-2 text-sm">
-                {t.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
-                    <span className="text-muted-foreground">{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                asChild
-                className="mt-6 w-full"
-                variant={t.highlight ? "default" : "outline"}
-              >
-                <Link to="/signup">{t.cta}</Link>
-              </Button>
-            </div>
+function ProductSection() {
+  return (
+    <section className="px-4 py-24 sm:px-6">
+      <SectionHeader
+        eyebrow="Everything for your upload API"
+        title="Build, monitor, analyze, and protect file flows"
+        body="The dashboard gives engineers a clear operational view of storage, transfer, scans, webhook delivery, and project health."
+      />
+      <div className="mx-auto mt-12 grid max-w-6xl gap-4 lg:grid-cols-[1.25fr_0.75fr]">
+        <DashboardPanel />
+        <div className="grid gap-4">
+          {WORKFLOWS.map((item) => (
+            <FeaturePanel key={item.title} {...item} />
           ))}
         </div>
       </div>
@@ -446,48 +431,175 @@ function Pricing() {
   );
 }
 
-const FAQS = [
-  {
-    q: "What S3-compatible providers are supported?",
-    a: "AWS S3 by default, plus Cloudflare R2, Backblaze B2, and self-hosted MinIO. Set the backend per project — no app changes needed.",
-  },
-  {
-    q: "How is billing handled?",
-    a: "Stripe powers global payments. Customers in supported African markets are auto-routed to Paystack for local cards and mobile money.",
-  },
-  {
-    q: "Can I migrate from my existing S3 bucket?",
-    a: "Yes. Point FileVault at your existing bucket prefix and we'll inventory it. New uploads use FileVault's lifecycle policies; old objects stay where they are.",
-  },
-  {
-    q: "Do you scan files for malware?",
-    a: "Optional ClamAV scanning per project, run as a worker step after upload. Adds ~2–3 seconds; toggle off for performance-critical paths.",
-  },
-];
-
-function FAQ() {
+function DashboardPanel() {
   return (
-    <section id="faq" className="border-t border-border/40 py-24">
-      <div className="mx-auto max-w-3xl px-6">
-        <h2 className="text-center text-3xl font-semibold tracking-tight md:text-4xl">
-          Frequently asked
-        </h2>
-        <div className="mt-10 divide-y divide-border/60 rounded-xl border border-border/60 bg-card/40">
-          {FAQS.map((f) => (
-            <details
-              key={f.q}
-              className="group px-6 py-5 [&_summary::-webkit-details-marker]:hidden"
-            >
-              <summary className="flex cursor-pointer items-center justify-between text-base font-medium">
-                {f.q}
-                <span className="ml-4 text-muted-foreground transition-transform group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <p className="mt-3 text-sm text-muted-foreground">{f.a}</p>
-            </details>
-          ))}
+    <div className="rounded-lg border border-white/10 bg-white/[0.025] p-4 shadow-[0_0_80px_rgba(255,255,255,0.08)]">
+      <div className="mb-5 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-white/10">
+            <Activity className="h-4 w-4 text-emerald-300" />
+          </span>
+          <div>
+            <p className="text-sm font-medium text-white">Production media</p>
+            <p className="text-xs text-zinc-500">Last 24 hours</p>
+          </div>
         </div>
+        <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-xs text-emerald-200">
+          healthy
+        </span>
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          ["Uploads", "18.2k"],
+          ["Transfer", "412 GB"],
+          ["Scan pass", "99.98%"],
+        ].map(([label, value]) => (
+          <div key={label} className="rounded-md border border-white/[0.07] bg-black/30 p-3">
+            <p className="text-xs text-zinc-500">{label}</p>
+            <p className="mt-2 text-xl font-semibold text-white">{value}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-5 flex h-40 items-end gap-1.5 rounded-md border border-white/[0.07] bg-black/30 p-3">
+        {[28, 44, 34, 58, 46, 72, 66, 80, 52, 74, 92, 68, 84, 62, 78, 88].map(
+          (height, index) => (
+            <span
+              key={`${height}-${index}`}
+              className="flex-1 rounded-sm bg-gradient-to-t from-emerald-400/30 to-zinc-100/75"
+              style={{ height: `${height}%` }}
+            />
+          ),
+        )}
+      </div>
+    </div>
+  );
+}
+
+function FeaturePanel({
+  icon: Icon,
+  title,
+  body,
+}: {
+  icon: typeof CloudUpload;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/[0.025] p-5">
+      <Icon className="h-5 w-5 text-emerald-300" />
+      <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-zinc-500">{body}</p>
+    </div>
+  );
+}
+
+function SecuritySection() {
+  return (
+    <section id="security" className="px-4 py-24 sm:px-6">
+      <SectionHeader
+        eyebrow="Secure and scalable from day one"
+        title="Storage controls that keep up with your product"
+        body="Start with direct uploads, then add isolation, inspection, logs, and regional policy without changing your application flow."
+      />
+      <div className="mx-auto mt-12 grid max-w-6xl gap-4 md:grid-cols-2">
+        {SECURITY.map((item) => (
+          <FeaturePanel key={item.title} {...item} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SdkSection() {
+  return (
+    <section className="px-4 py-24 sm:px-6">
+      <div className="mx-auto max-w-6xl">
+        <div className="max-w-2xl">
+          <p className="text-sm text-zinc-500">Leveled-up API development</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white md:text-5xl">
+            The upload layer your team stops rewriting
+          </h2>
+        </div>
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {SDK_FEATURES.map((feature, index) => {
+            const icons = [
+              Code2,
+              UploadCloud,
+              ServerCog,
+              DatabaseZap,
+              KeyRound,
+              Boxes,
+              Activity,
+              ShieldCheck,
+              Globe2,
+            ];
+            const Icon = icons[index];
+            return (
+              <div key={feature} className="flex gap-3 rounded-md p-2">
+                <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/[0.04]">
+                  <Icon className="h-4 w-4 text-zinc-300" />
+                </span>
+                <div>
+                  <h3 className="text-sm font-medium text-zinc-100">{feature}</h3>
+                  <p className="mt-1 text-sm leading-6 text-zinc-600">
+                    A focused primitive for production file infrastructure.
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PricingSection() {
+  return (
+    <section id="pricing" className="px-4 py-24 sm:px-6">
+      <SectionHeader
+        eyebrow="Pricing"
+        title="Start small, keep the same primitives at scale"
+        body="Free for prototypes, predictable for production, and available as managed cloud or self-hosted infrastructure."
+      />
+      <div className="mx-auto mt-12 grid max-w-5xl gap-4 md:grid-cols-3">
+        {TIERS.map((tier) => (
+          <div
+            key={tier.name}
+            className={`rounded-lg border p-5 ${
+              tier.featured
+                ? "border-zinc-300/30 bg-white/[0.08] shadow-[0_0_70px_rgba(255,255,255,0.12)]"
+                : "border-white/10 bg-white/[0.025]"
+            }`}
+          >
+            <h3 className="text-base font-semibold text-white">{tier.name}</h3>
+            <div className="mt-5 flex items-end gap-2">
+              <span className="text-4xl font-semibold tracking-tight text-white">
+                {tier.price}
+              </span>
+              <span className="pb-1 text-sm text-zinc-500">{tier.note}</span>
+            </div>
+            <ul className="mt-6 space-y-3">
+              {tier.features.map((feature) => (
+                <li key={feature} className="flex items-center gap-2 text-sm text-zinc-400">
+                  <Check className="h-4 w-4 text-emerald-300" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <Button
+              className={`mt-7 w-full ${
+                tier.featured
+                  ? "bg-zinc-100 text-zinc-950 hover:bg-white"
+                  : "border-white/10 text-zinc-200 hover:bg-white/10 hover:text-white"
+              }`}
+              variant={tier.featured ? "default" : "outline"}
+              asChild
+            >
+              <Link to="/signup">Get started</Link>
+            </Button>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -495,24 +607,28 @@ function FAQ() {
 
 function FooterCta() {
   return (
-    <section className="border-t border-border/40 py-20">
-      <div className="mx-auto max-w-3xl px-6 text-center">
-        <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-          Stop building upload pipelines.
+    <section className="px-4 py-28 text-center sm:px-6">
+      <div className="mx-auto max-w-3xl">
+        <h2 className="text-balance text-4xl font-semibold tracking-tight text-white md:text-6xl">
+          Protect your files. Start today.
         </h2>
-        <p className="mt-3 text-muted-foreground">
-          Sign up free, integrate in 5 minutes, scale when you're ready.
+        <p className="mx-auto mt-5 max-w-xl text-sm leading-6 text-zinc-500">
+          Create an API key, connect a bucket, and ship upload flows your team
+          can observe and control.
         </p>
-        <div className="mt-7 flex justify-center gap-3">
-          <Button size="xl" asChild>
-            <Link to="/signup">
-              Get started <ArrowRight className="h-4 w-4" />
-            </Link>
+        <div className="mt-8 flex justify-center gap-3">
+          <Button className="bg-zinc-100 text-zinc-950 hover:bg-white" asChild>
+            <Link to="/signup">Start free</Link>
           </Button>
-          <Button size="xl" variant="outline" asChild>
-            <Link to="/login" search={{ redirect: undefined }}>Sign in</Link>
+          <Button
+            variant="ghost"
+            className="text-zinc-300 hover:bg-white/10 hover:text-white"
+            asChild
+          >
+            <a href="https://docs.filevault.io">Read docs</a>
           </Button>
         </div>
+        <p className="mt-4 text-xs text-zinc-600">No credit card required.</p>
       </div>
     </section>
   );
@@ -520,44 +636,65 @@ function FooterCta() {
 
 function SiteFooter() {
   return (
-    <footer className="border-t border-border/40 bg-background/60 py-10">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 text-xs text-muted-foreground sm:flex-row">
-        <span>© {new Date().getFullYear()} FileVault. All rights reserved.</span>
-        <div className="flex items-center gap-5">
-          <a href="#" className="transition-colors hover:text-foreground">
-            Privacy
-          </a>
-          <a href="#" className="transition-colors hover:text-foreground">
-            Terms
-          </a>
-          <a href="#" className="transition-colors hover:text-foreground">
-            Status
-          </a>
+    <footer className="relative z-10 border-t border-white/[0.07] px-4 py-12 sm:px-6">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(4,1fr)]">
+          <div>
+            <div className="flex items-center gap-2 text-white">
+              <FileArchive className="h-5 w-5" />
+              <span className="font-semibold">FileVault</span>
+            </div>
+            <p className="mt-4 max-w-xs text-sm leading-6 text-zinc-600">
+              Upload, storage, delivery, and security infrastructure for
+              developer teams.
+            </p>
+          </div>
+          {[
+            ["Product", "Features", "Pricing", "Changelog"],
+            ["Resources", "Docs", "Templates", "Status"],
+            ["Company", "About", "Contact", "Careers"],
+            ["Legal", "Privacy", "Terms", "Security"],
+          ].map(([heading, ...items]) => (
+            <div key={heading}>
+              <h3 className="text-sm font-medium text-zinc-300">{heading}</h3>
+              <ul className="mt-4 space-y-3">
+                {items.map((item) => (
+                  <li key={item}>
+                    <a href="#" className="text-sm text-zinc-600 hover:text-zinc-300">
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="mt-12 text-[clamp(4.5rem,16vw,13rem)] font-semibold leading-none tracking-tight text-white/[0.06]">
+          FileVault
         </div>
       </div>
     </footer>
   );
 }
 
-function Logos() {
-  const logos = ["Acme", "Loomly", "Northwind", "Stardust", "Pulse", "Foundry"];
+function SectionHeader({
+  eyebrow,
+  title,
+  body,
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+}) {
   return (
-    <section className="py-10">
-      <div className="mx-auto max-w-5xl px-6">
-        <p className="text-center text-xs uppercase tracking-widest text-muted-foreground/70">
-          Trusted by teams shipping production workloads
-        </p>
-        <div className="mt-5 grid grid-cols-3 gap-x-8 gap-y-3 sm:grid-cols-6">
-          {logos.map((l) => (
-            <div
-              key={l}
-              className="text-center font-mono text-sm text-muted-foreground/70"
-            >
-              {l}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <div className="mx-auto max-w-3xl text-center">
+      <p className="text-sm text-zinc-500">{eyebrow}</p>
+      <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-white md:text-5xl">
+        {title}
+      </h2>
+      <p className="mx-auto mt-4 max-w-2xl text-balance text-sm leading-6 text-zinc-500">
+        {body}
+      </p>
+    </div>
   );
 }

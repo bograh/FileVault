@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 RUN corepack enable
 WORKDIR /app
@@ -17,8 +17,8 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
-    location /api/ {
-        proxy_pass http://api:8080/;
+    location /v1/ {
+        proxy_pass http://api:8080/v1/;
     }
 
     location / {

@@ -8,6 +8,11 @@ services:
       - "8080:8080"
     env_file:
       - ./backend/.env
+    environment:
+      DATABASE_URL: postgres://filevault:filevault@postgres:5432/filevault?sslmode=disable
+      REDIS_URL: redis://redis:6379/0
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      STORAGE_ENDPOINT: http://minio:9000
     depends_on:
       postgres:
         condition: service_healthy
@@ -24,6 +29,11 @@ services:
     command: ["/bin/worker"]
     env_file:
       - ./backend/.env
+    environment:
+      DATABASE_URL: postgres://filevault:filevault@postgres:5432/filevault?sslmode=disable
+      REDIS_URL: redis://redis:6379/0
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      STORAGE_ENDPOINT: http://minio:9000
     depends_on:
       postgres:
         condition: service_healthy
